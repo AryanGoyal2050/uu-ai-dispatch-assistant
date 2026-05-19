@@ -143,7 +143,7 @@ meter_location_target = st.sidebar.selectbox(
 st.sidebar.markdown("---")
 
 analyze_button = st.sidebar.button(
-    "⚡ Analyze Job Risk",
+    "⚡ Analyze Job",
     use_container_width=True
 )
 
