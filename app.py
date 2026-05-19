@@ -13,6 +13,159 @@ st.set_page_config(
 )
 
 # =========================================================
+# MINIMAL ACCENTURE STYLING
+# =========================================================
+
+st.markdown(
+    """
+    <style>
+
+    /* Main background */
+    .stApp {
+        background-color: #050816;
+    }
+
+    /* Top bar */
+    header {
+        background-color: #0B1023 !important;
+    }
+
+    [data-testid="stToolbar"] {
+        background-color: #0B1023 !important;
+    }
+
+    /* Sidebar */
+    section[data-testid="stSidebar"] {
+        background-color: #161A2D;
+        border-right: 1px solid #2B2F45;
+    }
+
+    /* Sidebar text */
+    section[data-testid="stSidebar"] * {
+        color: white !important;
+    }
+
+    /* Purple headings */
+    h1, h2, h3 {
+        color: #A855F7 !important;
+    }
+
+    /* Divider */
+    hr {
+        border-color: #7C3AED !important;
+    }
+
+    /* Buttons */
+    .stButton > button {
+        background: linear-gradient(90deg, #680BD3, #8B5CF6);
+        color: white !important;
+        border: none;
+        border-radius: 12px;
+        font-weight: 600;
+    }
+
+    .stButton > button:hover {
+        background: linear-gradient(90deg, #7C3AED, #A855F7);
+        color: white !important;
+    }
+
+    /* Selectboxes */
+    div[data-baseweb="select"] > div {
+        background-color: #0B1023 !important;
+        border: 1px solid #2E344D !important;
+        border-radius: 12px !important;
+    }
+
+    div[data-baseweb="select"] span {
+        color: white !important;
+    }
+
+    div[data-baseweb="select"] svg {
+        fill: #A855F7 !important;
+    }
+
+    /* Dropdown options */
+    ul {
+        background-color: #111827 !important;
+    }
+
+    li {
+        background-color: #111827 !important;
+        color: white !important;
+    }
+
+    li:hover {
+        background-color: #312E81 !important;
+    }
+
+    /* Metric cards */
+    div[data-testid="metric-container"] {
+        background: #0B1023;
+        border: 1px solid #272C45;
+        border-radius: 16px;
+        padding: 18px;
+        box-shadow: 0 0 12px rgba(104,11,211,0.12);
+    }
+
+    /* Metric labels */
+    div[data-testid="metric-container"] label {
+        color: #B8C1EC !important;
+    }
+
+    /* Metric values */
+    div[data-testid="metric-container"] div {
+        color: white !important;
+    }
+
+    /* Sliders */
+    .stSlider * {
+        color: white !important;
+    }
+
+    /* Success box */
+    .stSuccess {
+        background-color: rgba(34,197,94,0.15) !important;
+        color: #86EFAC !important;
+        border-radius: 12px;
+    }
+
+    .stSuccess * {
+        color: #86EFAC !important;
+    }
+
+    /* Warning box */
+    .stWarning {
+        background-color: rgba(250,204,21,0.15) !important;
+        color: #FDE68A !important;
+        border-radius: 12px;
+    }
+
+    .stWarning * {
+        color: #FDE68A !important;
+    }
+
+    /* Error box */
+    .stError {
+        background-color: rgba(239,68,68,0.15) !important;
+        color: #FCA5A5 !important;
+        border-radius: 12px;
+    }
+
+    .stError * {
+        color: #FCA5A5 !important;
+    }
+
+    /* Recommendations text */
+    p, li {
+        color: #E5E7EB;
+    }
+
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# =========================================================
 # LOAD MODEL
 # =========================================================
 
