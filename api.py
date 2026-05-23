@@ -1,23 +1,24 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+
 import pandas as pd
 import joblib
 
-# =====================================================
-# LOAD MODEL
-# =====================================================
-
-model = joblib.load("exception_prediction_model.pkl")
+from reasoning_engine import *
 
 # =====================================================
-# CREATE FASTAPI APP
+# FASTAPI APP
 # =====================================================
 
-app = FastAPI(
-    title="United Utilities AI Operations API",
-    description="AI-Powered SLA & Exception Risk Prediction API",
-    version="1.0"
-)
+app = FastAPI()
+
+# =====================================================
+# LOAD MODELS
+# =====================================================
+
+no_access_model = joblib.load("no_access_model.pkl")
+dig_model = joblib.load("dig_model.pkl")
+survey_model = joblib.load("survey_model.pkl")
 
 # =====================================================
 # INPUT SCHEMA
@@ -54,97 +55,53 @@ class JobInput(BaseModel):
     meter_location_target: str
 
 # =====================================================
-# ROOT ENDPOINT
+# ROOT
 # =====================================================
 
 @app.get("/")
-
-def home():
+def root():
 
     return {
-        "message": "United Utilities AI Operations API Running"
+        "message":
+        "United Utilities AI Dispatch Assistant API Running"
     }
 
 # =====================================================
-# PREDICTION ENDPOINT
+# PREDICT
 # =====================================================
 
 @app.post("/predict")
 
 def predict(job: JobInput):
 
-    # ================================================
-    # CONVERT INPUT TO DATAFRAME
-    # ================================================
+    input_data = pd.DataFrame([job.dict()])
 
-    input_data = pd.DataFrame([{
-        "postcode": job.postcode,
-
-        "phone_available": job.phone_available,
-        "email_available": job.email_available,
-
-        "preferred_contact": job.preferred_contact,
-
-        "past_no_contact_count": job.past_no_contact_count,
-        "past_no_access_count": job.past_no_access_count,
-
-        "total_contact_attempts": job.total_contact_attempts,
-        "field_visit_attempts": job.field_visit_attempts,
-
-        "cancellation_before_visit": job.cancellation_before_visit,
-
-        "appointment_slot": job.appointment_slot,
-
-        "days_between_booking_and_visit":
-            job.days_between_booking_and_visit,
-
-        "reschedule_count": job.reschedule_count,
-
-        "property_type": job.property_type,
-
-        "shared_access": job.shared_access,
-
-        "meter_location_current":
-            job.meter_location_current,
-
-        "meter_location_target":
-            job.meter_location_target
-    }])
-
-    # ================================================
-    # MODEL PREDICTION
-    # ================================================
-
-    probabilities = model.predict_proba(input_data)
-
-    no_contact_prob = round(
-        probabilities[0][:, 1][0] * 100,
-        2
-    )
+    # =================================================
+    # PREDICTIONS
+    # =================================================
 
     no_access_prob = round(
-        probabilities[1][:, 1][0] * 100,
+        no_access_model.predict_proba(input_data)[0][1] * 100,
         2
     )
 
     dig_prob = round(
-        probabilities[2][:, 1][0] * 100,
+        dig_model.predict_proba(input_data)[0][1] * 100,
         2
     )
 
     survey_prob = round(
-        probabilities[3][:, 1][0] * 100,
+        survey_model.predict_proba(input_data)[0][1] * 100,
         2
     )
 
-    # ================================================
-    # SLA CALCULATION
-    # ================================================
+    # =================================================
+    # SLA
+    # =================================================
 
     BASE_SLA = 5
 
     expected_delay = (
-        (no_contact_prob / 100) * 1.5 +
         (no_access_prob / 100) * 2.5 +
         (dig_prob / 100) * 6 +
         (survey_prob / 100) * 3
@@ -155,71 +112,55 @@ def predict(job: JobInput):
         2
     )
 
-    # ================================================
-    # RISK CATEGORY
-    # ================================================
+    overall_risk = round(
+        (
+            no_access_prob +
+            dig_prob +
+            survey_prob
+        ) / 3,
+        2
+    )
 
-    if expected_sla <= 7:
-        risk_category = "Low Risk"
+    # =================================================
+    # REASONING
+    # =================================================
 
-    elif expected_sla <= 10:
-        risk_category = "Medium Risk"
+    input_dict = input_data.iloc[0].to_dict()
 
-    else:
-        risk_category = "High Risk"
+    no_access_insights = generate_no_access_insights(
+        input_dict,
+        no_access_prob
+    )
 
-    # ================================================
-    # RECOMMENDATIONS
-    # ================================================
+    dig_insights = generate_dig_insights(
+        input_dict,
+        dig_prob
+    )
 
-    recommendations = []
+    survey_insights = generate_survey_insights(
+        input_dict,
+        survey_prob
+    )
 
-    if no_contact_prob > 20:
-
-        recommendations.append(
-            "Proactively contact customer before dispatch."
-        )
-
-    if no_access_prob > 20:
-
-        recommendations.append(
-            "Verify site/building access before visit."
-        )
-
-    if dig_prob > 15:
-
-        recommendations.append(
-            "Allocate specialist crew for possible dig work."
-        )
-
-    if survey_prob > 15:
-
-        recommendations.append(
-            "Consider pre-visit technical survey."
-        )
-
-    if expected_sla > 10:
-
-        recommendations.append(
-            "Add scheduling buffer due to elevated risk."
-        )
-
-    if len(recommendations) == 0:
-
-        recommendations.append(
-            "Standard dispatch recommended."
-        )
-
-    # ================================================
-    # RETURN RESPONSE
-    # ================================================
+    # =================================================
+    # RESPONSE
+    # =================================================
 
     return {
-        "no_contact_risk": no_contact_prob,
+
         "no_access_risk": no_access_prob,
+
         "dig_risk": dig_prob,
+
         "survey_risk": survey_prob,
+
+        "overall_risk": overall_risk,
+
         "expected_sla_days": expected_sla,
-        "risk_category": risk_category,
-        "recommendations": recommendations
+
+        "no_access_analysis": no_access_insights,
+
+        "dig_analysis": dig_insights,
+
+        "survey_analysis": survey_insights
     }
