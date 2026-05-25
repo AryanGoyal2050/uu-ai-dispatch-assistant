@@ -850,6 +850,145 @@ with tab2:
                 2
             )
 
+            overall = round(
+                (
+                    no_access +
+                    dig +
+                    survey
+                ) / 3,
+                2
+            )
+
+            # =========================================
+            # OVERALL RISK LEVEL
+            # =========================================
+
+            if overall < 20:
+                risk_level = "LOW"
+
+            elif overall < 45:
+                risk_level = "MEDIUM"
+
+            else:
+                risk_level = "HIGH"
+
+            # =========================================
+            # REASONS & RECOMMENDATIONS
+            # =========================================
+
+            insights = []
+
+            # -----------------------------------------
+            # NO ACCESS
+            # -----------------------------------------
+
+            if no_access >= 20:
+
+                # insights.append(
+                #     "NO ACCESS RISK:"
+                # )
+
+                if row.get("shared_access", False):
+                    insights.append(
+                        "- Shared-access property may delay technician entry."
+                    )
+
+                if row.get("past_no_access_count", 0) > 0:
+                    insights.append(
+                        "- Previous no-access history identified."
+                    )
+
+                if row.get("past_no_contact_count", 0) > 0:
+                    insights.append(
+                        "- Low customer engagement detected."
+                    )
+
+                insights.append(
+                    "- Verify building/security access before dispatch."
+                )
+
+                insights.append(
+                    "- Trigger customer access confirmation."
+                )
+
+                insights.append("")
+
+            # -----------------------------------------
+            # DIG RISK
+            # -----------------------------------------
+
+            if dig >= 20:
+
+                # insights.append(
+                #     "DIG RISK:"
+                # )
+
+                if row.get("current_meter_location") == "External":
+                    insights.append(
+                        "- External meter location may require excavation."
+                    )
+
+                if row.get("field_visit_attempts", 0) > 1:
+                    insights.append(
+                        "- Multiple previous field visits detected."
+                    )
+
+                insights.append(
+                    "- Arrange dig team standby before appointment."
+                )
+
+                insights.append(
+                    "- Validate underground accessibility in advance."
+                )
+
+                insights.append("")
+
+            # -----------------------------------------
+            # SURVEY RISK
+            # -----------------------------------------
+
+            if survey >= 20:
+
+                # insights.append(
+                #     "SURVEY RISK:"
+                # )
+
+                if row.get("property_type") == "Flat":
+                    insights.append(
+                        "- Flat/apartment installation may require survey."
+                    )
+
+                if row.get("days_between_booking_and_visit", 0) > 14:
+                    insights.append(
+                        "- Long waiting duration may increase survey probability."
+                    )
+
+                insights.append(
+                    "- Pre-arrange technical feasibility validation."
+                )
+
+                insights.append(
+                    "- Keep survey engineer availability ready."
+                )
+
+                insights.append("")
+
+            # =========================================
+            # IF NO MAJOR RISKS
+            # =========================================
+
+            if len(insights) == 0:
+
+                insights_text = "No major operational risks identified."
+
+            else:
+
+                insights_text = "<br>".join(insights)
+
+            # =========================================
+            # OUTPUT ROW
+            # =========================================
+
             output_rows.append({
 
                 "Work Order ID":
@@ -867,15 +1006,26 @@ with tab2:
                 "Expected SLA":
                 f"{expected_sla} Days",
 
-                "Overall Risk":
-                f"{overall}%"
+                "Risk Level":
+                risk_level,
+
+                "Reasons & Recommendations":
+                insights_text
             })
 
         output_df = pd.DataFrame(output_rows)
 
-        st.dataframe(
-            output_df,
-            use_container_width=True
+        # st.dataframe(
+        #     output_df,
+        #     use_container_width=True
+        # )
+
+        st.markdown(
+            output_df.to_html(
+                escape=False,
+                index=False
+            ),
+            unsafe_allow_html=True
         )
 
         csv = output_df.to_csv(index=False)
