@@ -555,7 +555,7 @@ with tab1:
         </p>
 
         <p style="
-        font-size:72px;
+        font-size:50px;
         font-weight:800;
         color:white;
         margin-bottom:10px;
