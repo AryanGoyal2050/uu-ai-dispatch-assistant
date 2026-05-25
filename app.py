@@ -91,15 +91,6 @@ def render_risk_card(
     </p>
 
     <p style="
-    text-align:center;
-    color:#D1D5DB;
-    font-size:20px;
-    margin-bottom:28px;
-    ">
-    +{sla_impact} SLA Days
-    </p>
-
-    <p style="
     background:{risk_color};
     color:white;
     padding:10px 18px;
