@@ -115,6 +115,35 @@ def render_risk_card(
 
 st.markdown("""
 <style>
+            
+[data-testid="stToolbar"] {
+    display: none !important;
+}
+
+[data-testid="stDecoration"] {
+    display: none !important;
+}
+
+[data-testid="stStatusWidget"] {
+    display: none !important;
+}
+
+[data-testid="stDeployButton"] {
+    display: none !important;
+}
+
+.viewerBadge_container__1QSob {
+    display: none !important;
+}
+
+.viewerBadge_link__1S137 {
+    display: none !important;
+}
+
+.viewerBadge_text__1JaDK {
+    display: none !important;
+}
+
 
 /* ---------- REMOVE STREAMLIT DEFAULTS ---------- */
 
