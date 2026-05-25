@@ -538,12 +538,37 @@ with tab1:
             2
         )
 
+        #######################################################
+        # OVERALL RISK SUMMARY
+        #######################################################
+
+        st.markdown(f"""
+        <div class="analysis-box" style="margin-top:20px; margin-bottom:35px;">
+
+        <p style="
+        color:#A855F7;
+        font-size:26px;
+        font-weight:700;
+        margin-bottom:18px;
+        ">
+        Overall Estimated SLA
+        </p>
+
+        <p style="
+        font-size:72px;
+        font-weight:800;
+        color:white;
+        margin-bottom:10px;
+        ">
+        {expected_sla} Days
+        </p>
+
+        """, unsafe_allow_html=True)
+
 
         # =====================================================
         # EXCEPTION ANALYSIS INSIDE CARDS
         # =====================================================
-
-        st.markdown("<br><br>", unsafe_allow_html=True)
 
         st.markdown("""
         <h2 style="color:#A855F7;">
