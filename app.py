@@ -385,92 +385,94 @@ with tab1:
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
-
-        postcode = st.selectbox(
-            "Postcode",
-            [f"PC{str(i).zfill(2)}" for i in range(1,16)]
-        )
-
         phone_available = st.selectbox(
             "Phone Available",
             [True, False]
         )
-
         email_available = st.selectbox(
             "Email Available",
             [True, False]
         )
-
         preferred_contact = st.selectbox(
-            "Preferred Contact",
+            "Preferred Contact Channel",
             ["Call", "SMS", "Email", "Mail"]
         )
-
-    with col2:
-
-        past_no_contact_count = st.slider(
-            "Past No Contact Count",
-            0, 5, 0
-        )
-
-        past_no_access_count = st.slider(
-            "Past No Access Count",
-            0, 5, 0
-        )
-
-        total_contact_attempts = st.slider(
-            "Total Contact Attempts",
-            1, 10, 2
-        )
-
-        field_visit_attempts = st.slider(
-            "Field Visit Attempts",
-            0, 5, 0
-        )
-
-    with col3:
-
-        cancellation_before_visit = st.selectbox(
-            "Cancellation Before Visit",
-            [True, False]
-        )
-
         appointment_slot = st.selectbox(
             "Appointment Slot",
             ["Morning", "Afternoon", "Evening"]
         )
-
-        days_between_booking_and_visit = st.slider(
-            "Days Between Booking & Visit",
-            1, 30, 5
-        )
-
-        reschedule_count = st.slider(
-            "Reschedule Count",
+        past_no_contact_count = st.slider(
+            f"Customer Response History \n(No Contact Count)",
             0, 5, 0
         )
-
-    with col4:
-
+        
+    
+    with col2:
+        postcode = st.selectbox(
+            "Postcode",
+            [f"PC{str(i).zfill(2)}" for i in range(1,16)]
+        )
         property_type = st.selectbox(
             "Property Type",
             ["House", "Apartment", "Commercial"]
         )
-
         shared_access = st.selectbox(
             "Shared Access",
             [True, False]
         )
+        demo2 = st.selectbox(
+            "Urban vs Rural Locality",
+            ["Urban", "Rural"]
+        )
+        demo3 = st.slider(
+            "Building age",
+            1, 100, 10
+        )
 
+
+    with col3:
         meter_location_current = st.selectbox(
             "Current Meter Location",
             ["Internal", "External"]
         )
-
         meter_location_target = st.selectbox(
             "Target Meter Location",
             ["Internal", "External"]
         )
+        meter_relocation_required = st.selectbox(
+            "Meter Relocation Required [DEMO FEATURE]",
+            [True, False]
+        )
+        days_between_booking_and_visit = st.slider(
+            "Distance Between Locations",
+            1, 30, 5
+        )
+
+    with col4:
+        cancellation_before_visit = st.selectbox(
+            "Previous Dig History",
+            [True, False]
+        )
+        past_no_access_count = st.slider(
+            "Past No-Access History (Count)",
+            0, 5, 0
+        )
+        total_contact_attempts = st.slider(
+            "Past No-Contact History (Count)",
+            1, 10, 2
+        )
+        field_visit_attempts = st.slider(
+            "Past Field Visit (Count)",
+            0, 5, 0
+        )
+        reschedule_count = st.slider(
+            "Reschedule Count",
+            0, 5, 0
+        )
+        
+        
+        
+        
 
     st.markdown("<br>", unsafe_allow_html=True)
 
