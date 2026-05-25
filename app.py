@@ -470,8 +470,7 @@ with tab1:
             0, 5, 0
         )
         
-        
-        
+
         
 
     st.markdown("<br>", unsafe_allow_html=True)
